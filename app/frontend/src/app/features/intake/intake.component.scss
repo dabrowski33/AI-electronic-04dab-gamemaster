@@ -1,0 +1,128 @@
+.page-container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 16px;
+}
+
+.form-card {
+  width: 100%;
+  max-width: 680px;
+  padding: 8px 8px 16px;
+  border-radius: 6px;
+  border-top: 3px solid #152e52;
+
+  mat-card-title {
+    font-family: 'Brygada 1918', Georgia, serif;
+    color: #152e52;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+  mat-card-subtitle {
+    margin-top: 8px;
+    color: #717171;
+    font-size: 14px;
+  }
+
+  mat-card-header {
+    margin-bottom: 24px;
+  }
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.upload-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 16px;
+  border: 1px dashed #bfcedd;
+  border-radius: 6px;
+}
+
+.upload-hint {
+  font-size: 12px;
+  color: #717171;
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #152e52;
+}
+
+.preview-container {
+  margin-top: 8px;
+}
+
+.image-preview {
+  max-width: 200px;
+  max-height: 150px;
+  border-radius: 4px;
+  border: 1px solid #bfcedd;
+  object-fit: contain;
+}
+
+.upload-error {
+  font-size: 12px;
+  color: #c0392b;
+}
+
+.error-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #fdecea;
+  border: 1px solid #c0392b;
+  border-left: 4px solid #c0392b;
+  border-radius: 4px;
+  color: #c0392b;
+  margin-bottom: 20px;
+  outline: none;
+
+  mat-icon {
+    flex-shrink: 0;
+  }
+
+  .error-banner__text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .error-banner__message {
+    font-weight: 500;
+  }
+
+  .retry-hint {
+    font-size: 13px;
+    color: #464646;
+  }
+}
+
+.required-note {
+  color: #c0392b;
+}
+
+.optional-note {
+  color: #717171;
+}
+
+.progress-bar {
+  margin: 8px 0;
+}
+
+.submit-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}

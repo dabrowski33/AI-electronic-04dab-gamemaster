@@ -1,0 +1,9 @@
+{
+  "category": "MORE_INFO_REQUIRED",
+  "justification": "Przesłane zdjęcie jest zbyt ciemne, by ocenić stan sprzętu. Nie można zweryfikować czy towar spełnia warunki zwrotu.",
+  "nextSteps": "Proszę przesłać nowe zdjęcie spełniające poniższe wymagania.",
+  "missingInfo": [
+    "Wyraźne zdjęcie przy dobrym oświetleniu pokazujące obudowę sprzętu",
+    "Zdjęcie pokazujące kompletność zestawu (akcesoria, kable)"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "summary": "Zdjęcie jest zbyt ciemne i niewyraźne — nie można ocenić stanu sprzętu.",
+  "observations": [
+    "Zdjęcie wykonane przy słabym oświetleniu",
+    "Nie widać wyraźnie obudowy ani stanu ekranu",
+    "Brak możliwości oceny kompletności"
+  ],
+  "confidence": "LOW",
+  "signsOfUse": "UNCERTAIN",
+  "visibleDamage": "UNCERTAIN",
+  "complete": "UNCERTAIN",
+  "resellableAsNew": "UNCERTAIN"
+}

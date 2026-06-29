@@ -1,0 +1,145 @@
+<div class="page-container">
+  <mat-card class="form-card">
+    <mat-card-header>
+      <mat-card-title>Zgłoś reklamację lub zwrot</mat-card-title>
+      <mat-card-subtitle>Wypełnij formularz i dołącz zdjęcie sprzętu, aby otrzymać wstępną ocenę zgłoszenia.</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (submitError()) {
+        <div class="error-banner" role="alert" #errorBanner tabindex="-1">
+          <mat-icon aria-hidden="true">error_outline</mat-icon>
+          <div class="error-banner__text">
+            <span class="error-banner__message">{{ submitError()!.message }}</span>
+            <span class="retry-hint">Twoje dane zostały zachowane. Popraw ewentualne błędy i spróbuj ponownie.</span>
+          </div>
+        </div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <!-- Type -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Typ zgłoszenia</mat-label>
+          <mat-select formControlName="type">
+            <mat-option value="REKLAMACJA">Reklamacja</mat-option>
+            <mat-option value="ZWROT">Zwrot</mat-option>
+          </mat-select>
+          @if (form.controls.type.invalid && form.controls.type.touched) {
+            <mat-error>Wybierz typ zgłoszenia.</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Category -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Kategoria sprzętu</mat-label>
+          <mat-select formControlName="category">
+            @for (entry of categoryEntries; track entry.value) {
+              <mat-option [value]="entry.value">{{ entry.label }}</mat-option>
+            }
+          </mat-select>
+          @if (form.controls.category.invalid && form.controls.category.touched) {
+            <mat-error>Wybierz kategorię sprzętu.</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Model -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Model / nazwa sprzętu</mat-label>
+          <input matInput formControlName="model" placeholder="np. Samsung Galaxy S21" maxlength="120" />
+          @if (form.controls.model.errors?.['required'] && form.controls.model.touched) {
+            <mat-error>Podaj model sprzętu.</mat-error>
+          }
+          @if (form.controls.model.errors?.['maxlength']) {
+            <mat-error>Maksymalnie 120 znaków.</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Purchase date -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Data zakupu</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="purchaseDate" placeholder="DD.MM.RRRR" [max]="today" />
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker [startAt]="today"></mat-datepicker>
+          @if (form.controls.purchaseDate.errors?.['required'] && form.controls.purchaseDate.touched) {
+            <mat-error>Podaj datę zakupu.</mat-error>
+          }
+          @if (form.controls.purchaseDate.errors?.['futureDate']) {
+            <mat-error>Data zakupu nie może być w przyszłości.</mat-error>
+          }
+          @if (form.controls.purchaseDate.errors?.['matDatepickerMax']) {
+            <mat-error>Data zakupu nie może być w przyszłości.</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Reason -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>
+            Opis usterki / powód zwrotu
+            @if (form.controls.type.value === 'REKLAMACJA') {
+              <span class="required-note"> (wymagane)</span>
+            } @else {
+              <span class="optional-note"> (opcjonalne)</span>
+            }
+          </mat-label>
+          <textarea matInput formControlName="reason" rows="4" placeholder="Opisz usterkę lub powód zwrotu..." maxlength="2000"></textarea>
+          @if (form.controls.reason.errors?.['required'] && form.controls.reason.touched) {
+            <mat-error>Opis usterki jest wymagany dla reklamacji.</mat-error>
+          }
+          @if (form.controls.reason.errors?.['maxlength']) {
+            <mat-error>Maksymalnie 2000 znaków.</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Image upload -->
+        <div class="upload-section">
+          <input
+            #fileInput
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            style="display:none"
+            (change)="onFileSelected($event)"
+          />
+          <button type="button" mat-stroked-button (click)="fileInput.click()">
+            <mat-icon>upload</mat-icon>
+            Wybierz zdjęcie
+          </button>
+          <span class="upload-hint">Dozwolone formaty: JPEG, PNG, WebP. Maks. 10 MB.</span>
+          @if (selectedFileName()) {
+            <div class="file-info">
+              <mat-icon>image</mat-icon>
+              <span>{{ selectedFileName() }}</span>
+            </div>
+          }
+          @if (previewUrl()) {
+            <div class="preview-container">
+              <img [src]="previewUrl()" alt="Podgląd zdjęcia" class="image-preview" />
+            </div>
+          }
+          @if (form.controls.image.errors?.['required'] && form.controls.image.touched) {
+            <mat-error class="upload-error">Zdjęcie jest wymagane.</mat-error>
+          }
+          @if (form.controls.image.errors?.['fileSizeMax']) {
+            <mat-error class="upload-error">Plik jest za duży. Maksymalny rozmiar to 10 MB.</mat-error>
+          }
+          @if (form.controls.image.errors?.['fileType']) {
+            <mat-error class="upload-error">Nieobsługiwany format pliku. Dozwolone: JPEG, PNG, WebP.</mat-error>
+          }
+        </div>
+
+        @if (submitting()) {
+          <mat-progress-bar mode="indeterminate" class="progress-bar"></mat-progress-bar>
+        }
+
+        <div class="submit-row">
+          <button mat-raised-button color="primary" type="submit" [disabled]="submitting()">
+            @if (submitting()) {
+              Analizowanie...
+            } @else {
+              Wyślij zgłoszenie
+            }
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

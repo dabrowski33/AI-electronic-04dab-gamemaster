@@ -1,0 +1,7 @@
+# Small/fast local model for automations & function-calling style workflows
+# Run with:
+#   codex --oss --profile ollama-lfm
+
+oss_provider = "ollama"
+model = "lfm2.5-thinking" # tiny 1.5B model, agentic, very fast
+model_context_window = 32000 # Recommended: set a larger context window for OSS models

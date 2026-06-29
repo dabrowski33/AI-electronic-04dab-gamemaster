@@ -1,0 +1,73 @@
+<div class="chat-layout">
+  <!-- Case summary header -->
+  @if (caseResponse()) {
+    <div class="case-summary">
+      <div class="summary-info">
+        <span class="summary-badge" [ngClass]="caseResponse()!.caseSummary.type.toLowerCase()">
+          {{ caseResponse()!.caseSummary.type === 'REKLAMACJA' ? 'Reklamacja' : 'Zwrot' }}
+        </span>
+        <span class="summary-category">{{ getCategoryLabel(caseResponse()!.caseSummary.category) }}</span>
+        <span class="summary-model">{{ caseResponse()!.caseSummary.model }}</span>
+        <span class="summary-date">{{ caseResponse()!.caseSummary.purchaseDate }}</span>
+      </div>
+      <div class="decision-badge" [ngClass]="getDecisionClass(caseResponse()!.decision.category)">
+        {{ getDecisionLabel(caseResponse()!.decision.category) }}
+      </div>
+    </div>
+  }
+
+  <!-- Chat error banner -->
+  @if (chatError()) {
+    <div class="chat-error-banner" role="alert">
+      <mat-icon>error_outline</mat-icon>
+      {{ chatError() }}
+    </div>
+  }
+
+  <!-- Message list -->
+  <div class="messages-container" #messagesContainer>
+    @for (msg of messages(); track $index) {
+      <div class="message-row" [ngClass]="msg.role">
+        <div class="bubble" [ngClass]="msg.role">
+          @if (msg.role === 'user') {
+            <span>{{ msg.content }}</span>
+          } @else {
+            <markdown [data]="msg.content" class="markdown-content"></markdown>
+            @if ($index === 0 && caseResponse()) {
+              <div class="decision-category-inline" [ngClass]="getDecisionClass(caseResponse()!.decision.category)">
+                {{ getDecisionLabel(caseResponse()!.decision.category) }}
+              </div>
+            }
+          }
+          @if (msg.streaming) {
+            <mat-spinner diameter="20" class="typing-spinner"></mat-spinner>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Composer -->
+  <div class="composer">
+    <mat-form-field appearance="outline" class="composer-field">
+      <mat-label>Twoja wiadomość</mat-label>
+      <textarea
+        matInput
+        [formControl]="messageInput"
+        rows="2"
+        placeholder="Napisz pytanie..."
+        maxlength="2000"
+        (keydown.enter)="onEnterKey($event)"
+      ></textarea>
+    </mat-form-field>
+    <button
+      mat-icon-button
+      color="primary"
+      [disabled]="streaming() || !messageInput.value.trim()"
+      (click)="sendMessage()"
+      aria-label="Wyślij wiadomość"
+    >
+      <mat-icon>send</mat-icon>
+    </button>
+  </div>
+</div>

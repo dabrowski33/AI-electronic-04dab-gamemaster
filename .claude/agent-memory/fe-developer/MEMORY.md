@@ -1,0 +1,1 @@
+- [Angular Material 18 M2 theming API](project-angular-material-theming.md) — Use `mat.m2-define-palette`, `mat.m2-define-light-theme`, `mat.$m2-*-palette`; the un-prefixed names don't exist in v18

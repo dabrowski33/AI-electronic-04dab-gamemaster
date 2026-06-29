@@ -1,0 +1,138 @@
+{
+  "$meta": {
+    "source": "https://nbp.pl/",
+    "brand": "Narodowy Bank Polski (NBP)",
+    "extractedOn": "2026-06-24",
+    "notes": "Tokens extracted from the NBP public website via computed styles. Pixel values rounded to the nearest sensible unit (the site renders with a fractional rem scale, e.g. body 15.49px ≈ 16px base)."
+  },
+  "colors": {
+    "brand": {
+      "primary": "#152E52",
+      "primaryName": "NBP Navy",
+      "accent": "#4A74B0",
+      "accentName": "NBP Blue",
+      "gold": "#BDAD7D",
+      "goldName": "Logo Gold",
+      "goldLight": "#E8D499",
+      "goldLightName": "Sand / Highlight",
+      "error": "#C0392B",
+      "success": "#2E7D32"
+    },
+    "background": {
+      "default": "#FFFFFF",
+      "light": "#F7F7F7",
+      "dark": "#152E52",
+      "muted": "#C4C4C4",
+      "overlay": "rgba(21, 46, 82, 0.6)"
+    },
+    "border": {
+      "default": "#BFCEDD",
+      "muted": "#C4C4C4"
+    },
+    "text": {
+      "primary": "#464646",
+      "heading": "#152E52",
+      "secondary": "#333333",
+      "muted": "#717171",
+      "link": "#4A74B0",
+      "onDark": "#FFFFFF"
+    }
+  },
+  "typography": {
+    "fontFamily": {
+      "heading": "\"Brygada 1918\", Georgia, \"Times New Roman\", serif",
+      "primary": "\"Libre Franklin\", -apple-system, Arial, \"Noto Sans\", sans-serif"
+    },
+    "fontWeights": {
+      "regular": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700
+    },
+    "fontSize": {
+      "xs": "12px",
+      "sm": "13px",
+      "base": "16px",
+      "md": "18px",
+      "lg": "20px",
+      "xl": "24px",
+      "2xl": "30px",
+      "3xl": "38px"
+    },
+    "lineHeight": {
+      "tight": "1.25",
+      "base": "1.5",
+      "relaxed": "1.6"
+    }
+  },
+  "spacing": {
+    "1": "4px",
+    "2": "8px",
+    "3": "12px",
+    "4": "16px",
+    "5": "20px",
+    "6": "24px",
+    "7": "28px",
+    "8": "32px",
+    "10": "40px",
+    "12": "48px"
+  },
+  "borderRadius": {
+    "none": "0px",
+    "xs": "2px",
+    "sm": "4px",
+    "md": "6px",
+    "full": "999px",
+    "circle": "50%"
+  },
+  "components": {
+    "button": {
+      "primary": {
+        "backgroundColor": "#4A74B0",
+        "color": "#FFFFFF",
+        "border": "1px solid #4A74B0",
+        "padding": "6px 12px",
+        "borderRadius": "4px",
+        "fontSize": "13px",
+        "fontWeight": 500,
+        "textTransform": "uppercase"
+      },
+      "secondary": {
+        "backgroundColor": "#FFFFFF",
+        "color": "#464646",
+        "border": "1px solid #BFCEDD",
+        "padding": "10px",
+        "borderRadius": "6px",
+        "fontSize": "16px",
+        "fontWeight": 400,
+        "textTransform": "none"
+      }
+    },
+    "header": {
+      "backgroundColor": "#152E52",
+      "color": "#FFFFFF",
+      "padding": "0px"
+    },
+    "nav": {
+      "color": "#464646",
+      "backgroundColor": "#FFFFFF",
+      "fontSize": "16px",
+      "fontWeight": 400
+    },
+    "input": {
+      "backgroundColor": "#FFFFFF",
+      "color": "#464646",
+      "border": "1px solid #BFCEDD",
+      "borderRadius": "6px",
+      "padding": "10px",
+      "fontSize": "16px"
+    },
+    "heading": {
+      "fontFamily": "\"Brygada 1918\", Georgia, serif",
+      "color": "#152E52",
+      "fontWeight": 500,
+      "fontSize": "24px",
+      "lineHeight": "32px"
+    }
+  }
+}

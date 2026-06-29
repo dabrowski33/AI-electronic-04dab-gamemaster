@@ -1,0 +1,12 @@
+{
+  "summary": "Zdjęcie nie pokazuje miejsca usterki — ogólny widok telefonu bez widocznej wady.",
+  "observations": [
+    "Zdjęcie pokazuje tylną część obudowy",
+    "Nie widać ekranu ani miejsca usterki",
+    "Brak możliwości oceny rodzaju i przyczyny wady"
+  ],
+  "confidence": "LOW",
+  "visibleDamage": "UNCERTAIN",
+  "damageType": "",
+  "likelyCause": "INCONCLUSIVE"
+}

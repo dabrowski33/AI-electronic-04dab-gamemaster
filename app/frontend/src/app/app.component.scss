@@ -1,0 +1,91 @@
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #f7f7f7;
+}
+
+/* NBP navy header with the gold logo — canonical brand look (design-guidelines §6) */
+.app-header {
+  background: #152e52;
+  color: #ffffff;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
+}
+
+.app-header__inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.app-header__brand {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.app-header__logo {
+  height: 44px;
+  width: auto;
+  display: block;
+}
+
+.app-header__service {
+  font-family: 'Brygada 1918', Georgia, serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: #ffffff;
+  padding-left: 20px;
+  border-left: 1px solid rgba(255, 255, 255, 0.25);
+  line-height: 1.25;
+}
+
+.app-main {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* NBP navy footer (matches the institutional homepage) */
+.app-footer {
+  background: #152e52;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: auto;
+}
+
+.app-footer__inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.app-footer__disclaimer {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  max-width: 760px;
+}
+
+.app-footer__copy {
+  margin: 0;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+@media (max-width: 600px) {
+  .app-header__service {
+    font-size: 15px;
+    padding-left: 14px;
+  }
+  .app-header__logo {
+    height: 36px;
+  }
+}

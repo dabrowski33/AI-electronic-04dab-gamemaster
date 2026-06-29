@@ -1,0 +1,2 @@
+- [Security hook on pom.xml writes](feedback-security-hook-blocks-vulnerable-deps.md) — Real PreToolUse hook in .claude/settings.json reviews every pom.xml change; may block or alter dependency versions
+- [Backend dependency versions in pom.xml](project-backend-dep-versions.md) — Spring Boot 3.5.11, openai-java 4.41.0, Thumbnailator 0.4.21, WireMock 3.9.1 (as of 2026-06-25)

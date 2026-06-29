@@ -1,0 +1,244 @@
+2026-06-25 08:19:40 From Łukasz Matuszewski To Everyone:
+	ctrl + w
+	usuwanie całych słów w terminalu
+
+2026-06-25 08:24:23 From Łukasz Matuszewski To Everyone:
+	claude code
+	esc x2
+	usunięcie prompta napisanego całego
+
+	OSTROŻNIE: czasami może skillować proces działający / sub-agenta (zależnie od sytuacji i agenta CLI któgo używacie)
+
+2026-06-25 08:39:17 From Łukasz Matuszewski To Everyone:
+	https://github.com/LucasMatuszewski/AI-Programming-Course-NBP-22-06-2026/blob/main/course-materials/Prompt%20examples/Plan-SubAgents-matrix-dependency-map.md
+	Prompt - Plan z macieżą zależności zadań i agentóœ
+
+2026-06-25 08:40:43 From Łukasz Matuszewski To Everyone:
+	ctrl + g
+	edycja prompta w edytorze
+
+2026-06-25 08:41:31 From Łukasz Matuszewski To Everyone:
+	edytory kodu w terminalu przykładowe:
+	micro
+	nvim
+
+2026-06-25 08:53:17 From Łukasz Matuszewski To Everyone:
+	shift + tab
+	zmiana trybu pracy
+
+	ustawcie teraz  plan mode
+
+2026-06-25 09:13:19 From Łukasz Matuszewski To Everyone:
+	"plansDirectory": "./docs/plans",
+
+	custom folder do zapisywania planów w projekcie
+	dodać na poziomie projektu w .claude/settings.json
+
+2026-06-25 10:02:29 From Łukasz Matuszewski To Everyone:
+	review changes made in /docs/plans (there is one file) and confirm if it is aligned with my ADR and PRD files in /docs (search for these files and compare our plan with our documentation files). If anything is not aligned report this and list all recommended changes you would made.
+
+2026-06-25 10:03:27 From Łukasz Matuszewski To Everyone:
+	ctrl+o
+	details / transcription of session
+
+2026-06-25 10:23:10 From Łukasz Matuszewski To Everyone:
+	/goal your goal is to fully implement the plan described in /docs/plans/poc-implementation-plan.md
+
+2026-06-25 10:24:39 From Kris D. To Everyone:
+	wcześniej miałem bezpośrednio "Usage" w "Customize". Teraz view jest inne... i tu nie ma "Usage". Ale jest w "Settings" ;-)
+	{5BB326F6-3003-4EA5-834A-9C173D9127FE}.png
+
+2026-06-25 10:25:12 From Kris D. To Everyone:
+	98% sonet
+	{22AC604A-3D66-451D-BC66-0527C967607B}.png
+
+2026-06-25 10:26:42 From Łukasz Matuszewski To Everyone:
+	11:40 koniec przerwy
+
+2026-06-25 10:53:40 From Łukasz Matuszewski To Everyone:
+	Nested Sub-agents
+	(max 5 levels in Claude Code)
+
+	https://github.com/LucasMatuszewski/AI-Programming-Course-NBP-22-06-2026/blob/main/course-materials/Course%20Notes%20-%20AI%20in%20Programming.md#sub-agents
+
+	Nested agents:
+	https://code.claude.com/docs/en/sub-agents#spawn-nested-subagents
+
+2026-06-25 10:56:23 From Łukasz Matuszewski To Everyone:
+	https://code.claude.com/docs/en/goal
+
+	Goal
+
+2026-06-25 11:02:01 From Łukasz Matuszewski To Everyone:
+	https://code.claude.com/docs/en/agent-view#quick-start
+
+	Agent View (experimental, new)
+
+2026-06-25 11:02:41 From Łukasz Matuszewski To Everyone:
+	https://code.claude.com/docs/en/agent-teams
+
+	Agent Teams vs Sub-Agents
+
+2026-06-25 11:12:05 From Łukasz Matuszewski To Everyone:
+	https://code.claude.com/docs/en/workflows
+
+	Odpalanie do setek agentów na wielu elementach - zarządzanie poprzez skrypt
+
+2026-06-25 11:13:21 From Łukasz Matuszewski To Everyone:
+	Podobne do workflows od Codex:
+	https://developers.openai.com/codex/subagents#process-csv-batches-with-subagents-experimental
+
+	praca na pliku CSV
+
+2026-06-25 11:15:49 From Łukasz Matuszewski To Everyone:
+	Ralph Loops
+	Pierwowzór Claude Workflows i pracy na CSV w Codex
+
+	https://github.com/LucasMatuszewski/AI-Programming-Course-NBP-22-06-2026/blob/main/course-materials/Course%20Notes%20-%20AI%20in%20Programming.md#ralph-wiggum-bash-loop
+
+2026-06-25 11:17:06 From Łukasz Matuszewski To Everyone:
+	Przykład Bash Loop:
+
+	https://github.com/LucasMatuszewski/AI-Programming-Course-NBP-22-06-2026/tree/main/course-materials/how-to-ralph-wiggum
+
+2026-06-25 11:24:30 From Łukasz Matuszewski To Everyone:
+	C:\Users\labuser\.claude
+
+	user settings for Claude
+
+2026-06-25 11:27:04 From Łukasz Matuszewski To Everyone:
+	Claude main user settings example:
+	https://github.com/LucasMatuszewski/AI-Programming-Course-NBP-22-06-2026/tree/main/course-materials/.claude-example
+
+2026-06-25 11:28:10 From Łukasz Matuszewski To Everyone:
+	C:\Users\labuser\DEV\AI-Programming-Course-NBP-22-06-2026\course-materials\.claude-example
+
+2026-06-25 11:44:26 From Łukasz Matuszewski To Everyone:
+	I have issue with Claude Code Statusline I configured in this script:
+	C:\Users\labuser\.claude\statusline.sh
+
+	Install jq
+
+	---
+
+	git:electronic-complains-chat-app | C:\Users\labuser\DEV\AI-Programming-Course-NBP-22-06-2026
+	? (no jq) | ░░░░░░░░░░ 0%
+
+2026-06-25 11:48:44 From Łukasz Matuszewski To Everyone:
+	jest też komenda:
+	/statusline <prompt z opisem co chcecie>
+	tworzy automatycznie statusline.sh
+
+2026-06-25 11:50:03 From Łukasz Matuszewski To Everyone:
+	Custom bash script - przełączanie providerów API do LLM (np. OpenRouter, Z.ai)
+
+	C:\Users\labuser\DEV\AI-Programming-Course-NBP-22-06-2026\course-materials\.bashrc
+
+2026-06-25 12:08:02 From Łukasz Matuszewski To Everyone:
+	lazygit
+
+2026-06-25 12:08:58 From Łukasz Matuszewski To Everyone:
+	lazyvim
+
+2026-06-25 12:09:03 From Łukasz Matuszewski To Everyone:
+	lazydocker
+
+2026-06-25 12:10:12 From Łukasz Matuszewski To Everyone:
+	Obecny mój branch:
+
+	https://github.com/LucasMatuszewski/AI-Programming-Course-NBP-22-06-2026/tree/electronic-complains-chat-app
+
+	WAŻNE: miałem błąd w Planie oraz w ADR!!! Informował, aby robić Stub/mock LLM endpoint in E2E tests!!!
+	Ten błąd (niespójność z instrukcją z AGENTS.md) całkowicie zaburzył proces weryfikacji i aplikacja nie działała poprawnie (agent sprawdzał tylko mock cały czas... nie realne działanie aplikacji)
+
+	WERYFIKUJCIE PLANY ZAWSZE - gdybym go wykrył na etapie sprawdzania planu, aplikacja by działała poprawnie.
+
+2026-06-25 12:11:41 From Łukasz Matuszewski To Everyone:
+	13:45 koniec przerwy
+
+2026-06-25 12:40:53 From Marcin To Everyone:
+	drugi raz dzisiaj wykorzystałem limit - qa agent męczył się m.in. z datapickerem 174k tokenów
+
+2026-06-25 13:03:58 From Damian To Everyone:
+	Bez tytułu3.png
+
+2026-06-25 13:03:58 From Marcin To Everyone:
+	jestem
+
+2026-06-25 13:04:15 From Damian To Everyone:
+	Minełą 14 i mam 101% wykorzystania
+
+2026-06-25 13:25:46 From Łukasz Matuszewski To Everyone:
+	https://www.jetbrains.com/acp/
+
+	ACP Registry - używanie agentów CLI w innych narzędziach, np. w IntelliJ albo wewnątrz OpenClaw albo Zed
+
+	ACP protocol stworzony przez Zed IDE
+
+2026-06-25 13:25:49 From Łukasz Matuszewski To Everyone:
+	{
+	  "mcpServers": {
+	    "context7": {
+	      "type": "http",
+	      "url": "https://mcp.context7.com/mcp",
+	      "headers": {
+	        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+	      }
+	      }
+	  }
+	}
+
+
+2026-06-25 13:28:37 From Łukasz Matuszewski To Everyone:
+	{
+	  "mcpServers": {
+	    "context7": {
+	      "type": "http",
+	      "url": "https://mcp.context7.com/mcp",
+	      "headers": {
+	        "CONTEXT7_API_KEY": "ctx7sk-xxxxxxxxxx"
+	      }
+	    }
+	  }
+	}
+
+2026-06-25 13:32:45 From Łukasz Matuszewski To Everyone:
+	https://research.google/blog/turboquant-redefining-ai-efficiency-with-extreme-compression/
+
+	Kompresja Okna Kontekstu - TurboQuant
+
+2026-06-25 13:58:25 From Łukasz Matuszewski To Everyone:
+	"closex/neuraldaredevil-8b-abliterated": {
+	"name": "NeuralDareDevil 8B Abliterated"
+	}
+
+	Moder bez cenzury
+
+2026-06-25 13:59:16 From Łukasz Matuszewski To Everyone:
+	Model bez cenzury:
+	https://ollama.com/closex/neuraldaredevil-8b-abliterated
+
+2026-06-25 14:25:55 From Łukasz Matuszewski To Everyone:
+	Micro CLI editor:
+	https://micro-editor.github.io/
+
+	Polecam jako $EDITOR w .bashrc
+
+2026-06-25 14:27:01 From Łukasz Matuszewski To Everyone:
+	JetBrains MCP Server - dostęp do danych z JetBrains dla Waszych agentów, np. Codex, Claude Code, czy OpenCode:
+
+	https://www.jetbrains.com/help/idea/mcp-server.html
+
+2026-06-25 14:50:25 From Łukasz Matuszewski To Everyone:
+	Leaderboard agentów CLI - Terminal Bench
+
+	https://www.tbench.ai/leaderboard/terminal-bench/2.0?agents=Claude+Code,Codex+CLI
+
+2026-06-25 15:03:23 From Łukasz Matuszewski To Everyone:
+	did you merge changes to our feature branch or do you keep them on worktree?
+
+	what is the best practice to work with git worktrees? Can we create PR on GitHub from worktreee? or should we first merge to our feature branch?
+
+	Check real git status, do not use session history.
+
+	Use Contex7 to read latest git worktree docs

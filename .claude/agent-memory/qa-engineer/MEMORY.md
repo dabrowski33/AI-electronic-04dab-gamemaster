@@ -1,0 +1,3 @@
+- [E2E test setup](project-e2e-setup.md) — app/e2e/ runs the REAL stack (not stub-llm); see app/e2e/AGENTS.md
+- [JPEG fixture generation](feedback-jpeg-fixture.md) — must use Java AWT; synthetic hex blobs crash ImageIO
+- [Send button state](feedback-send-button-state.md) — button disabled when input empty OR streaming; fill textarea before asserting enabled

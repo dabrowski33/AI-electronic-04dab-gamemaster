@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PRD — Hardware Service Decision Copilot</title>
+<link rel="icon" href="../assets/favicon.ico" />
+<style>
+/* ============ Fonts (self-hosted NBP brand typefaces) ============ */
+@font-face{font-family:"Brygada 1918";font-weight:400;font-style:normal;font-display:swap;src:url("../assets/fonts/brygada-1918/Brygada1918-Regular.ttf") format("truetype");}
+@font-face{font-family:"Brygada 1918";font-weight:500;font-style:normal;font-display:swap;src:url("../assets/fonts/brygada-1918/Brygada1918-Medium.ttf") format("truetype");}
+@font-face{font-family:"Brygada 1918";font-weight:600;font-style:normal;font-display:swap;src:url("../assets/fonts/brygada-1918/Brygada1918-SemiBold.ttf") format("truetype");}
+@font-face{font-family:"Brygada 1918";font-weight:700;font-style:normal;font-display:swap;src:url("../assets/fonts/brygada-1918/Brygada1918-Bold.ttf") format("truetype");}
+@font-face{font-family:"Libre Franklin";font-weight:300;font-style:normal;font-display:swap;src:url("../assets/fonts/libre-franklin/LibreFranklin-Light.ttf") format("truetype");}
+@font-face{font-family:"Libre Franklin";font-weight:400;font-style:normal;font-display:swap;src:url("../assets/fonts/libre-franklin/LibreFranklin-Regular.ttf") format("truetype");}
+@font-face{font-family:"Libre Franklin";font-weight:500;font-style:normal;font-display:swap;src:url("../assets/fonts/libre-franklin/LibreFranklin-Medium.ttf") format("truetype");}
+@font-face{font-family:"Libre Franklin";font-weight:600;font-style:normal;font-display:swap;src:url("../assets/fonts/libre-franklin/LibreFranklin-SemiBold.ttf") format("truetype");}
+@font-face{font-family:"Libre Franklin";font-weight:700;font-style:normal;font-display:swap;src:url("../assets/fonts/libre-franklin/LibreFranklin-Bold.ttf") format("truetype");}
+
+/* ============ Tokens ============ */
+:root{
+  --navy:#152E52; --blue:#4A74B0; --gold:#BDAD7D; --sand:#E8D499;
+  --bg:#FFFFFF; --bg-light:#F7F7F7; --bg-muted:#C4C4C4;
+  --border:#BFCEDD; --border-muted:#C4C4C4;
+  --text:#464646; --text-strong:#333333; --text-muted:#717171; --heading:#152E52; --on-dark:#FFFFFF;
+  --error:#C0392B; --success:#2E7D32;
+  --serif:"Brygada 1918",Georgia,"Times New Roman",serif;
+  --sans:"Libre Franklin",-apple-system,Arial,"Noto Sans",sans-serif;
+  --r-sm:4px; --r-md:6px; --r-lg:10px;
+  --shadow:0 1px 2px rgba(21,46,82,.06),0 4px 16px rgba(21,46,82,.07);
+  --shadow-lg:0 8px 30px rgba(21,46,82,.12);
+  --maxw:1180px;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4{font-family:var(--serif);color:var(--heading);font-weight:600;line-height:1.2;margin:0 0 .5em;}
+h2{font-size:30px;letter-spacing:-.01em;}
+h3{font-size:21px;}
+h4{font-size:17px;}
+p{margin:0 0 1em;}
+a{color:var(--blue);text-decoration:none;}
+a:hover{text-decoration:underline;}
+strong{color:var(--text-strong);font-weight:600;}
+code{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:.86em;background:#eef2f7;color:var(--navy);padding:.12em .4em;border-radius:3px;}
+
+/* ============ Scroll progress ============ */
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--gold),var(--blue));z-index:200;transition:width .08s linear;}
+
+/* ============ Header ============ */
+header.site{position:sticky;top:0;z-index:100;background:var(--navy);color:var(--on-dark);box-shadow:0 2px 12px rgba(0,0,0,.18);}
+.head-inner{max-width:var(--maxw);margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:18px;}
+.head-inner img.logo{height:40px;width:auto;display:block;}
+.head-titles{display:flex;flex-direction:column;line-height:1.15;border-left:1px solid rgba(255,255,255,.22);padding-left:18px;}
+.head-titles .eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:600;}
+.head-titles .ttl{font-family:var(--serif);font-size:18px;font-weight:600;color:#fff;}
+.head-spacer{flex:1;}
+.head-badge{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--sand);border:1px solid rgba(189,173,125,.5);padding:5px 11px;border-radius:999px;white-space:nowrap;}
+@media(max-width:680px){.head-badge{display:none;}.head-titles .ttl{font-size:15px;}}
+
+/* ============ Layout ============ */
+.layout{max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:248px 1fr;gap:40px;padding:0 24px;}
+nav.toc{position:sticky;top:84px;align-self:start;height:calc(100vh - 100px);overflow-y:auto;padding:28px 0;font-size:14px;}
+nav.toc .toc-label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);font-weight:600;margin:0 0 12px;}
+nav.toc ol{list-style:none;margin:0;padding:0;}
+nav.toc li{margin:0;}
+nav.toc a{display:flex;gap:10px;align-items:baseline;color:var(--text);padding:7px 12px 7px 14px;border-left:2px solid transparent;border-radius:0 var(--r-sm) var(--r-sm) 0;line-height:1.3;}
+nav.toc a:hover{background:var(--bg-light);text-decoration:none;color:var(--navy);}
+nav.toc a.active{border-left-color:var(--gold);background:var(--bg-light);color:var(--navy);font-weight:600;}
+nav.toc a .num{color:var(--gold);font-weight:700;font-size:12px;min-width:16px;}
+main{padding:28px 0 80px;min-width:0;}
+@media(max-width:900px){.layout{grid-template-columns:1fr;}nav.toc{display:none;}}
+
+/* ============ Sections ============ */
+section{padding:46px 0;border-top:1px solid #eceff3;scroll-margin-top:84px;}
+section:first-of-type{border-top:none;}
+.sec-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);font-weight:600;margin-bottom:10px;}
+.sec-eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);}
+
+/* ============ Hero ============ */
+.hero{padding:56px 0 40px;}
+.hero h1{font-size:46px;line-height:1.08;letter-spacing:-.015em;margin-bottom:.3em;font-weight:700;}
+.hero .lead{font-size:19px;line-height:1.55;color:var(--text-strong);max-width:62ch;}
+.hero .lead .hl{background:linear-gradient(transparent 62%, var(--sand) 62%);padding:0 2px;}
+.pills{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0 4px;}
+.pill{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:500;background:var(--bg-light);border:1px solid var(--border);color:var(--text-strong);padding:7px 14px;border-radius:999px;}
+.pill svg{width:14px;height:14px;}
+.pill.accent{background:#eef3fa;border-color:#cfe0f4;color:var(--navy);}
+.pill.gold{background:#faf6ea;border-color:#e7dcb8;color:#8a7a45;}
+
+/* ============ Cards / grids ============ */
+.grid{display:grid;gap:20px;}
+.grid.cols-2{grid-template-columns:repeat(2,1fr);}
+.grid.cols-3{grid-template-columns:repeat(3,1fr);}
+.grid.cols-4{grid-template-columns:repeat(4,1fr);}
+@media(max-width:760px){.grid.cols-2,.grid.cols-3,.grid.cols-4{grid-template-columns:1fr;}}
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);padding:22px;box-shadow:var(--shadow);}
+.card.flat{box-shadow:none;background:var(--bg-light);border-color:#e6eaf0;}
+.card h3{margin-bottom:.35em;}
+
+/* persona cards */
+.persona{position:relative;overflow:hidden;}
+.persona .who{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+.persona .avatar{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-family:var(--serif);font-weight:700;font-size:20px;color:#fff;flex:none;}
+.persona .role{font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;}
+.persona .name{font-family:var(--serif);font-size:20px;font-weight:600;color:var(--navy);}
+.persona .tag{display:inline-block;font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;margin-top:4px;}
+.tag-primary{background:#eef3fa;color:var(--blue);}
+.tag-secondary{background:#f1f0ea;color:#8a7a45;}
+
+/* problem cards */
+.pain{border-left:3px solid var(--error);padding-left:16px;}
+.pain h4{color:var(--text-strong);font-family:var(--sans);font-weight:600;}
+
+/* ============ Decision categories ============ */
+.decisions{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+@media(max-width:860px){.decisions{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:520px){.decisions{grid-template-columns:1fr;}}
+.dec{border-radius:var(--r-lg);padding:20px;border:1px solid;position:relative;background:#fff;box-shadow:var(--shadow);transition:transform .15s ease,box-shadow .15s ease;}
+.dec:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+.dec .ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;margin-bottom:12px;}
+.dec .ic svg{width:21px;height:21px;}
+.dec .pl{font-family:var(--serif);font-size:18px;font-weight:600;margin-bottom:1px;}
+.dec .en{font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:9px;}
+.dec p{font-size:14px;margin:0;color:var(--text);}
+.dec.eligible{border-color:#bfe0c2;background:linear-gradient(180deg,#f3faf4,#fff);}
+.dec.eligible .ic{background:#e3f4e5;color:var(--success);}
+.dec.eligible .pl{color:var(--success);}
+.dec.noteligible{border-color:#f1cdc8;background:linear-gradient(180deg,#fdf4f3,#fff);}
+.dec.noteligible .ic{background:#fae3e0;color:var(--error);}
+.dec.noteligible .pl{color:var(--error);}
+.dec.review{border-color:#e7dcb8;background:linear-gradient(180deg,#fbf8ef,#fff);}
+.dec.review .ic{background:#f3ecd5;color:#8a7a45;}
+.dec.review .pl{color:#8a7a45;}
+.dec.moreinfo{border-color:#cfe0f4;background:linear-gradient(180deg,#f2f6fc,#fff);}
+.dec.moreinfo .ic{background:#e4edf8;color:var(--blue);}
+.dec.moreinfo .pl{color:var(--blue);}
+
+/* ============ Tabs (flows) ============ */
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;border-bottom:1px solid var(--border);padding-bottom:0;}
+.tab{appearance:none;border:none;background:none;font-family:var(--sans);font-size:14px;font-weight:600;color:var(--text-muted);padding:10px 14px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;border-radius:4px 4px 0 0;display:flex;align-items:center;gap:8px;transition:color .12s;}
+.tab:hover{color:var(--navy);background:var(--bg-light);}
+.tab.active{color:var(--navy);border-bottom-color:var(--gold);}
+.tab .badge{font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px;background:#eef3fa;color:var(--blue);}
+.tab.danger.active{border-bottom-color:var(--error);} .tab.danger .badge{background:#fae3e0;color:var(--error);}
+.tab.warn.active{border-bottom-color:var(--gold);} .tab.warn .badge{background:#f3ecd5;color:#8a7a45;}
+.tabpanel{display:none;animation:fade .25s ease;}
+.tabpanel.active{display:block;}
+@keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+/* steps */
+ol.steps{list-style:none;counter-reset:s;margin:0;padding:0;}
+ol.steps li{counter-increment:s;position:relative;padding:0 0 18px 46px;}
+ol.steps li:before{content:counter(s);position:absolute;left:0;top:-2px;width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;font-family:var(--sans);font-weight:700;font-size:14px;display:grid;place-items:center;}
+ol.steps li:after{content:"";position:absolute;left:14px;top:30px;bottom:2px;width:2px;background:var(--border);}
+ol.steps li:last-child{padding-bottom:0;}
+ol.steps li:last-child:after{display:none;}
+ol.steps li .st-title{font-weight:600;color:var(--text-strong);}
+.flow-note{display:flex;gap:12px;align-items:flex-start;background:var(--bg-light);border:1px solid #e6eaf0;border-radius:var(--r-md);padding:14px 16px;margin-bottom:18px;font-size:14px;}
+.flow-note svg{width:18px;height:18px;flex:none;margin-top:2px;color:var(--blue);}
+
+/* ============ Mockups ============ */
+.mockups{display:grid;grid-template-columns:1fr 1fr;gap:26px;}
+@media(max-width:820px){.mockups{grid-template-columns:1fr;}}
+.device{border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-lg);background:#fff;}
+.device .bar{background:var(--navy);height:34px;display:flex;align-items:center;gap:6px;padding:0 14px;}
+.device .bar span{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.32);}
+.device .bar .url{margin-left:10px;font-size:11px;color:rgba(255,255,255,.7);background:rgba(255,255,255,.1);padding:3px 10px;border-radius:999px;}
+.device .screen{padding:20px;font-size:13.5px;}
+.mock-label{text-align:center;font-size:13px;color:var(--text-muted);font-weight:600;margin-top:12px;letter-spacing:.02em;}
+.f-row{margin-bottom:13px;}
+.f-row label{display:block;font-size:12px;font-weight:600;color:var(--text-strong);margin-bottom:5px;}
+.f-row label .req{color:var(--error);}
+.f-control{border:1px solid var(--border);border-radius:var(--r-md);padding:9px 11px;font-size:13px;color:var(--text);background:#fff;display:flex;align-items:center;justify-content:space-between;}
+.f-control.ph{color:var(--text-muted);}
+.seg{display:flex;gap:8px;}
+.seg .opt{flex:1;text-align:center;border:1px solid var(--border);border-radius:var(--r-md);padding:9px;font-weight:600;font-size:13px;cursor:default;}
+.seg .opt.on{background:var(--navy);color:#fff;border-color:var(--navy);}
+.dropzone{border:1.5px dashed var(--border);border-radius:var(--r-md);padding:16px;text-align:center;color:var(--text-muted);font-size:12.5px;background:var(--bg-light);}
+.dropzone .thumb{width:54px;height:54px;border-radius:8px;background:linear-gradient(135deg,#dde6f1,#c9d6e8);margin:0 auto 8px;display:grid;place-items:center;color:var(--blue);}
+.btn-primary{background:var(--blue);color:#fff;border:1px solid var(--blue);border-radius:var(--r-sm);padding:11px;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;text-align:center;width:100%;}
+/* chat */
+.chat-summary{background:var(--bg-light);border:1px solid #e6eaf0;border-radius:var(--r-md);padding:11px 13px;font-size:12px;display:flex;gap:12px;align-items:center;margin-bottom:16px;}
+.chat-summary .ph{width:42px;height:42px;border-radius:6px;background:linear-gradient(135deg,#dde6f1,#c9d6e8);flex:none;display:grid;place-items:center;color:var(--blue);}
+.chat-summary dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:2px 8px;}
+.chat-summary dt{color:var(--text-muted);} .chat-summary dd{margin:0;font-weight:600;color:var(--text-strong);}
+.bubble{max-width:88%;padding:12px 14px;border-radius:14px;font-size:13px;margin-bottom:12px;line-height:1.5;}
+.bubble.agent{background:var(--bg-light);border:1px solid #e6eaf0;border-top-left-radius:4px;}
+.bubble.user{background:var(--blue);color:#fff;border-top-right-radius:4px;margin-left:auto;}
+.verdict{display:inline-flex;align-items:center;gap:7px;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.04em;background:#e3f4e5;color:var(--success);padding:5px 11px;border-radius:999px;margin:2px 0 9px;}
+.disclaimer{font-size:11px;color:var(--text-muted);border-top:1px dashed var(--border);margin-top:10px;padding-top:8px;font-style:italic;}
+.chat-input{display:flex;gap:8px;margin-top:6px;}
+.chat-input .box{flex:1;border:1px solid var(--border);border-radius:999px;padding:9px 14px;font-size:12.5px;color:var(--text-muted);}
+.chat-input .send{width:36px;height:36px;border-radius:50%;background:var(--blue);display:grid;place-items:center;flex:none;color:#fff;}
+
+/* ============ Acceptance criteria ============ */
+.ac-group{border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:14px;overflow:hidden;background:#fff;}
+.ac-head{width:100%;display:flex;align-items:center;gap:12px;background:var(--bg-light);border:none;padding:15px 18px;cursor:pointer;font-family:var(--sans);text-align:left;}
+.ac-head:hover{background:#eef2f7;}
+.ac-head .ac-ic{font-family:var(--serif);font-weight:700;color:var(--gold);font-size:15px;}
+.ac-head .ac-name{font-family:var(--serif);font-size:17px;font-weight:600;color:var(--navy);flex:1;}
+.ac-head .count{font-size:12px;font-weight:600;color:var(--text-muted);background:#fff;border:1px solid var(--border);padding:2px 9px;border-radius:999px;}
+.ac-head .chev{transition:transform .2s;color:var(--text-muted);}
+.ac-group.open .chev{transform:rotate(90deg);}
+.ac-body{display:none;padding:6px 18px 14px;}
+.ac-group.open .ac-body{display:block;}
+.ac-item{display:flex;gap:12px;padding:11px 0;border-top:1px solid #f0f2f5;}
+.ac-item:first-child{border-top:none;}
+.ac-item .id{font-size:11px;font-weight:700;color:var(--blue);background:#eef3fa;border-radius:var(--r-sm);padding:3px 7px;height:fit-content;white-space:nowrap;letter-spacing:.02em;}
+.ac-item .txt{font-size:14px;}
+
+/* ============ Allowed / not allowed ============ */
+.dos{border-radius:var(--r-lg);padding:22px;border:1px solid;}
+.dos.allow{background:linear-gradient(180deg,#f3faf4,#fff);border-color:#bfe0c2;}
+.dos.deny{background:linear-gradient(180deg,#fdf4f3,#fff);border-color:#f1cdc8;}
+.dos h3{display:flex;align-items:center;gap:9px;font-family:var(--sans);font-size:16px;}
+.dos.allow h3{color:var(--success);} .dos.deny h3{color:var(--error);}
+.dos ul{list-style:none;margin:0;padding:0;}
+.dos li{position:relative;padding:7px 0 7px 28px;font-size:14px;border-top:1px solid rgba(0,0,0,.05);}
+.dos li:first-child{border-top:none;}
+.dos li:before{position:absolute;left:0;top:7px;font-weight:700;}
+.dos.allow li:before{content:"✓";color:var(--success);}
+.dos.deny li:before{content:"✕";color:var(--error);}
+
+/* callout */
+.callout{display:flex;gap:16px;background:linear-gradient(135deg,#152E52,#1d3d6b);color:#fff;border-radius:var(--r-lg);padding:24px 26px;box-shadow:var(--shadow-lg);}
+.callout .ic{width:42px;height:42px;border-radius:10px;background:rgba(189,173,125,.22);display:grid;place-items:center;flex:none;color:var(--sand);}
+.callout h3{color:#fff;margin-bottom:.3em;}
+.callout p{color:rgba(255,255,255,.86);margin:0;}
+.callout .quote{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--sand);margin-top:12px;padding-left:14px;border-left:2px solid rgba(189,173,125,.5);}
+
+/* chips / out of scope */
+.chips{display:flex;flex-wrap:wrap;gap:9px;}
+.chip{font-size:13px;font-weight:500;background:#fff;border:1px solid var(--border);color:var(--text-strong);padding:8px 13px;border-radius:999px;display:inline-flex;align-items:center;gap:7px;}
+.chip .x{color:var(--bg-muted);font-weight:700;}
+.chip.planned{border-style:dashed;border-color:var(--blue);color:var(--blue);background:#f7faff;}
+.chip.planned .x{color:var(--blue);}
+.legend{font-size:12.5px;color:var(--text-muted);margin-top:14px;display:flex;gap:18px;flex-wrap:wrap;}
+.legend span{display:inline-flex;align-items:center;gap:6px;}
+.swatch{width:22px;height:0;border-top:2px solid var(--bg-muted);} .swatch.dash{border-top:2px dashed var(--blue);}
+
+/* backlog */
+.backlog{counter-reset:b;display:grid;gap:14px;}
+.bl{display:flex;gap:16px;align-items:flex-start;background:#f7faff;border:1px dashed #cfe0f4;border-radius:var(--r-lg);padding:16px 18px;}
+.bl .n{counter-increment:b;font-family:var(--serif);font-weight:700;font-size:22px;color:var(--blue);flex:none;line-height:1;}
+.bl .n:before{content:counter(b);}
+.bl h4{font-family:var(--sans);margin-bottom:.2em;color:var(--navy);}
+.bl p{margin:0;font-size:14px;}
+
+/* tables */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--r-lg);}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:520px;}
+th,td{text-align:left;padding:12px 16px;border-bottom:1px solid #eceff3;vertical-align:top;}
+th{background:var(--bg-light);font-weight:600;color:var(--navy);font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;}
+tr:last-child td{border-bottom:none;}
+td code{white-space:nowrap;}
+
+/* mermaid */
+.diagram-wrap{border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;background:var(--bg-light);overflow-x:auto;}
+.mermaid{display:flex;justify-content:center;min-width:560px;}
+
+/* misc lists */
+ul.clean{list-style:none;margin:0;padding:0;}
+ul.clean li{position:relative;padding:6px 0 6px 22px;font-size:15px;}
+ul.clean li:before{content:"";position:absolute;left:2px;top:14px;width:7px;height:7px;border-radius:50%;background:var(--gold);}
+
+.cat-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+.cat-list .c{font-size:12.5px;background:#fff;border:1px solid var(--border);padding:6px 11px;border-radius:var(--r-sm);color:var(--text-strong);}
+
+/* footer */
+footer.site{background:var(--navy);color:rgba(255,255,255,.8);margin-top:40px;}
+.foot-inner{max-width:var(--maxw);margin:0 auto;padding:34px 24px;display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between;}
+.foot-inner img{height:34px;}
+.stack{display:flex;flex-wrap:wrap;gap:8px;}
+.stk{font-size:12px;font-weight:600;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#fff;padding:6px 11px;border-radius:999px;}
+.foot-meta{font-size:12px;color:rgba(255,255,255,.6);width:100%;border-top:1px solid rgba(255,255,255,.12);padding-top:18px;}
+.foot-meta a{color:var(--sand);}
+
+.section-intro{font-size:17px;color:var(--text-strong);max-width:70ch;}
+.kicker-row{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:8px;}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<header class="site">
+  <div class="head-inner">
+    <img class="logo" src="../assets/logo.svg" alt="Narodowy Bank Polski" />
+    <div class="head-titles">
+      <span class="eyebrow">Product Requirements</span>
+      <span class="ttl">Hardware Service Decision Copilot</span>
+    </div>
+    <div class="head-spacer"></div>
+    <span class="head-badge">MVP / PoC · NBP</span>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="toc" aria-label="Spis treści">
+    <p class="toc-label">Spis treści</p>
+    <ol id="toc-list">
+      <li><a href="#summary"><span class="num">1</span> Streszczenie</a></li>
+      <li><a href="#problem"><span class="num">2</span> Problem</a></li>
+      <li><a href="#personas"><span class="num">3</span> Persony</a></li>
+      <li><a href="#flows"><span class="num">4</span> Główne przepływy</a></li>
+      <li><a href="#decisions"><span class="num">5</span> Kategorie decyzji</a></li>
+      <li><a href="#screens"><span class="num">6</span> Ekrany / UI</a></li>
+      <li><a href="#diagram"><span class="num">7</span> Diagram przepływu</a></li>
+      <li><a href="#criteria"><span class="num">8</span> Kryteria akceptacji</a></li>
+      <li><a href="#agent"><span class="num">9</span> Zachowanie agenta</a></li>
+      <li><a href="#scope"><span class="num">10</span> Poza zakresem</a></li>
+      <li><a href="#constraints"><span class="num">11</span> Ograniczenia</a></li>
+      <li><a href="#backlog"><span class="num">12</span> Backlog</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <!-- HERO -->
+    <div class="hero">
+      <div class="pills" style="margin-top:0;margin-bottom:18px;">
+        <span class="pill accent">Product Requirements Document</span>
+        <span class="pill">Status: MVP / PoC</span>
+      </div>
+      <h1>Hardware Service Decision Copilot</h1>
+      <p class="lead">Samoobsługowa aplikacja webowa, która w&nbsp;kilka minut podpowiada klientowi, czy jego <span class="hl">zwrot</span> (14&nbsp;dni) lub <span class="hl">reklamacja</span> (rękojmia&nbsp;/&nbsp;gwarancja) ma szansę zostać przyjęta — na podstawie krótkiego formularza i&nbsp;jednego zdjęcia urządzenia, analizowanego przez multimodalny model AI.</p>
+      <div class="pills">
+        <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18M3 12h18M3 17h12"/></svg> Krótki formularz + 1 zdjęcie</span>
+        <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> Wstępna ocena w minuty</span>
+        <span class="pill gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/></svg> Decyzja niewiążąca, doradcza</span>
+        <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Czat z agentem</span>
+      </div>
+    </div>
+
+    <!-- 1. SUMMARY -->
+    <section id="summary">
+      <span class="sec-eyebrow"><span class="dot"></span>Sekcja 1</span>
+      <h2>Streszczenie</h2>
+      <p class="section-intro">Klient wypełnia krótki formularz i&nbsp;wgrywa jedno zdjęcie urządzenia. System analizuje zdjęcie multimodalnym LLM, a&nbsp;następnie agent rozumujący łączy analizę zdjęcia, dane z&nbsp;formularza oraz opublikowane polityki firmy, aby wydać <strong>wstępną, doradczą decyzję</strong> z&nbsp;czytelnym uzasadnieniem.</p>
+      <div class="grid cols-3" style="margin-top:26px;">
+        <div class="card flat">
+          <h3>Wejście</h3>
+          <p style="margin:0;font-size:14px;">Typ sprawy (zwrot/reklamacja), kategoria sprzętu, model, data zakupu, powód oraz <strong>dokładnie jedno</strong> zdjęcie.</p>
+        </div>
+        <div class="card flat">
+          <h3>Przetwarzanie</h3>
+          <p style="margin:0;font-size:14px;">Analiza obrazu osobnym promptem dla zwrotu / reklamacji, a&nbsp;następnie decyzja agenta na bazie polityki firmy.</p>
+        </div>
+        <div class="card flat">
+          <h3>Wyjście</h3>
+          <p style="margin:0;font-size:14px;">Pierwsza wiadomość w&nbsp;czacie: kategoria decyzji, uzasadnienie, kolejne kroki i&nbsp;obowiązkowe zastrzeżenie.</p>
+        </div>
+      </div>
+      <div class="callout" style="margin-top:24px;">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M12 9v4M12 17h.01M10.3 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.7 3.86a2 2 0 0 0-3.42 0z"/></svg></div>
+        <div>
+          <h3>To jest MVP</h3>
+          <p>Decyzja <strong>nie jest wiążąca</strong> — to wstępna, zautomatyzowana ocena. Przypadki niepewne lub graniczne są kierowane do weryfikacji przez człowieka.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. PROBLEM -->
+    <section id="problem">
+      <span class="sec-eyebrow"><span class="dot"></span>Sekcja 2</span>
+      <h2>Problem</h2>
+      <p class="section-intro">Klient, który chce zwrócić urządzenie lub złożyć reklamację, nie potrafi z&nbsp;góry ocenić, czy sprawa się kwalifikuje. Zasady (14-dniowe odstąpienie, wymagania co do stanu, zakres rękojmi, wyłączenia za uszkodzenia z&nbsp;winy użytkownika) są rozproszone w&nbsp;trudnych do czytania dokumentach.</p>
+      <div class="grid cols-3" style="margin-top:24px;">
+        <div class="card pain"><h4>Zbędne zgłoszenia</h4><p style="margin:0;font-size:14px;">Klienci składają oczywiście niekwalifikujące się zwroty/reklamacje, a&nbsp;potem czekają dniami na odmowę.</p></div>
+        <div class="card pain"><h4>Rezygnacja uprawnionych</h4><p style="margin:0;font-size:14px;">Klienci, którzy faktycznie się kwalifikują, wahają się lub rezygnują, bo nie mają pewności.</p></div>
+        <div class="card pain"><h4>Obciążenie wsparcia</h4><p style="margin:0;font-size:14px;">Obsługa traci czas na pytania o&nbsp;triaż i&nbsp;powtarzalne wyjaśnianie warunków.</p></div>
+      </div>
+      <div class="flow-note" style="margin-top:22px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+        <span>Dziś klient może jedynie czytać gęste polityki, dzwonić/pisać i&nbsp;czekać, albo po prostu wysłać towar i&nbsp;liczyć na szczęście. Brakuje <strong>natychmiastowej, dopasowanej do przypadku i&nbsp;wyjaśnionej pierwszej odpowiedzi</strong>.</span>
+      </div>
+    </section>
+
+    <!-- 3. PERSONAS -->
+    <section id="personas">
+      <span class="sec-eyebrow"><span class="dot"></span>Sekcja 3</span>
+      <h2>Persony</h2>
+      <div class="grid cols-3" style="margin-top:18px;">
+        <div class="card persona">
+          <div class="who"><div class="avatar" style="background:linear-gradient(135deg,#4A74B0,#2f568c);">A</div><div><div class="role">Persona A — główna</div><div class="name">Anna</div><span class="tag tag-primary">Zwrot</span></div></div>
+          <p style="font-size:14px;margin:0;">Kupiła urządzenie online, rozmyśliła się i&nbsp;chce je zwrócić w&nbsp;okresie odstąpienia. Nietechniczna, nie prawniczka. Chce szybkiej odpowiedzi w&nbsp;prostym języku: <em>„Czy mogę to zwrócić i&nbsp;co dalej?"</em> Oczekuje uczciwości co do tego, czy ślady używania dyskwalifikują zwrot.</p>
+        </div>
+        <div class="card persona">
+          <div class="who"><div class="avatar" style="background:linear-gradient(135deg,#C0392B,#8f2a20);">M</div><div><div class="role">Persona B — główna</div><div class="name">Marek</div><span class="tag tag-primary">Reklamacja</span></div></div>
+          <p style="font-size:14px;margin:0;">Jego urządzenie się zepsuło. Chce złożyć reklamację i&nbsp;obawia się odrzucenia jako „jego wina". Chce zrozumieć, czy widoczne uszkodzenie wygląda na wadę fabryczną czy na uszkodzenie użytkownika, i&nbsp;jaki dowód lub krok jest potrzebny.</p>
+        </div>
+        <div class="card persona">
+          <div class="who"><div class="avatar" style="background:linear-gradient(135deg,#BDAD7D,#9a8a55);">S</div><div><div class="role">Persona C — pośrednia</div><div class="name">Konsultant</div><span class="tag tag-secondary">Weryfikacja</span></div></div>
+          <p style="font-size:14px;margin:0;">Pracownik wsparcia, który dostaje sprawy oznaczone jako <strong>Wymaga weryfikacji</strong>. Nie jest bezpośrednim użytkownikiem UI MVP, ale produkt musi dostarczyć ustrukturyzowane dane sprawy, które przyśpieszą jego ręczną ocenę. Konsola recenzenta jest <strong>poza zakresem</strong> MVP.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. FLOWS -->
+    <section id="flows">
+      <span class="sec-eyebrow"><span class="dot"></span>Sekcja 4</span>
+      <h2>Główne przepływy</h2>
+      <p class="section-intro">Sześć ścieżek — od dwóch przypadków „happy path" po obsługę błędów. Wybierz zakładkę.</p>
+      <div class="tabs" role="tablist" style="margin-top:22px;">
+        <button class="tab active" data-tab="f1">✅ Zwrot — kwalifikuje się</button>
+        <button class="tab" data-tab="f2">🔧 Reklamacja — wada</button>
+        <button class="tab danger" data-tab="f3">⛔ Nie kwalifikuje się</button>
+        <button class="tab warn" data-tab="f4">👤 Weryfikacja</button>
+        <button class="tab" data-tab="f5">ℹ️ Więcej informacji</button>
+        <button class="tab danger" data-tab="f6">⚠️ Ścieżki błędów</button>
+      </div>
+
+      <div class="tabpanel active" id="f1">
+        <div class="flow-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><span><strong>Happy path — Zwrot, kwalifikuje się.</strong> Klient zwraca sprawny towar w&nbsp;oknie odstąpienia.</span></div>
+        <ol class="steps">
+          <li><span class="st-title">Wejście do aplikacji</span> — klient ląduje na formularzu zgłoszenia.</li>
+          <li><span class="st-title">Wypełnienie</span> — wybiera <strong>Zwrot</strong>, kategorię sprzętu, model, datę zakupu, opcjonalnie powód i&nbsp;wgrywa jedno zdjęcie.</li>
+          <li><span class="st-title">Walidacja</span> — system sprawdza dane po stronie klienta i&nbsp;serwera.</li>
+          <li><span class="st-title">Analiza obrazu</span> — backend kompresuje zdjęcie i&nbsp;wysyła je do multimodalnego LLM <strong>promptem analizy dla zwrotu</strong> (ślady używania, kompletność, czy towar wygląda na zdatny do odsprzedaży jako nowy).</li>
+          <li><span class="st-title">Decyzja</span> — backend przekazuje analizę + dane formularza + <strong>politykę zwrotów</strong> do agenta promptem decyzyjnym dla zwrotu.</li>
+          <li><span class="st-title">Wynik</span> — agent zwraca kategorię, uzasadnienie i&nbsp;kolejne kroki.</li>
+          <li><span class="st-title">Przejście do czatu</span> — pierwsza wiadomość: powitanie, decyzja <strong>Kwalifikuje się</strong>, wyjaśnienie odwołujące się do zdjęcia i&nbsp;polityki, kroki i&nbsp;zastrzeżenie.</li>
+          <li><span class="st-title">Pytanie uzupełniające</span> — np. „Czy płacę za odesłanie?" — agent odpowiada z&nbsp;pełnym kontekstem.</li>
+        </ol>
+      </div>
+
+      <div class="tabpanel" id="f2">
+        <div class="flow-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a4 4 0 0 0-5.6 5.6L3 18v3h3l6.1-6.1a4 4 0 0 0 5.6-5.6l-2.5 2.5-2.1-2.1z"/></svg><span><strong>Happy path — Reklamacja, wykryta wada.</strong> Jak wyżej, ale typ = <strong>Reklamacja</strong>, a&nbsp;pole „powód" jest <strong>wymagane</strong>.</span></div>
+        <ol class="steps">
+          <li><span class="st-title">Kroki 1–3</span> — jak przy zwrocie, lecz klient wybiera <strong>Reklamacja</strong>; pole powodu jest obowiązkowe.</li>
+          <li><span class="st-title">Analiza obrazu (reklamacja)</span> — backend wysyła zdjęcie <strong>promptem analizy dla reklamacji</strong>: identyfikacja widocznego uszkodzenia, jego typu i&nbsp;najbardziej prawdopodobnej przyczyny (wada fabryczna / uszkodzenie użytkownika / zużycie).</li>
+          <li><span class="st-title">Decyzja (reklamacja)</span> — analiza + formularz + <strong>polityka reklamacji</strong> trafiają do agenta promptem decyzyjnym dla reklamacji.</li>
+          <li><span class="st-title">Wynik i&nbsp;czat</span> — agent zwraca decyzję i&nbsp;uzasadnienie; otwiera się czat z&nbsp;pierwszą wiadomością; klient kontynuuje rozmowę.</li>
+        </ol>
+      </div>
+
+      <div class="tabpanel" id="f3">
+        <div class="flow-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m15 9-6 6M9 9l6 6"/></svg><span><strong>Alternatywa — Nie kwalifikuje się.</strong></span></div>
+        <ul class="clean">
+          <li>Zwrot, gdy zdjęcie pokazuje wyraźne ślady używania, <strong>lub</strong> data zakupu wypada poza oknem 14&nbsp;dni → decyzja <strong>Nie kwalifikuje się</strong>.</li>
+          <li>Komunikat podaje konkretny powód dyskwalifikacji oraz zastrzeżenie, że klient nadal może eskalować sprawę do człowieka.</li>
+        </ul>
+      </div>
+
+      <div class="tabpanel" id="f4">
+        <div class="flow-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span><strong>Alternatywa — Wymaga weryfikacji.</strong></span></div>
+        <ul class="clean">
+          <li>Sprzeczne lub graniczne dowody (zdjęcie niejednoznaczne, przyczyna uszkodzenia niepewna, przypadek brzegowy polityki) → decyzja <strong>Wymaga weryfikacji</strong>.</li>
+          <li>Agent wyjaśnia, dlaczego nie może zdecydować i&nbsp;co sprawdzi człowiek.</li>
+        </ul>
+      </div>
+
+      <div class="tabpanel" id="f5">
+        <div class="flow-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg><span><strong>Alternatywa — Potrzeba więcej informacji.</strong></span></div>
+        <ul class="clean">
+          <li>Dane/zdjęcie są niewystarczające (zdjęcie nie pokazuje istotnej części, brak modelu, niejasny powód) → decyzja <strong>Potrzeba więcej informacji</strong>.</li>
+          <li>System wymienia dokładnie, czego brakuje; klient może to uzupełnić w&nbsp;czacie.</li>
+        </ul>
+      </div>
+
+      <div class="tabpanel" id="f6">
+        <div class="flow-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><span><strong>Ścieżki błędów.</strong></span></div>
+        <div class="grid cols-3" style="margin-top:4px;">
+          <div class="card flat"><h4 style="font-family:var(--sans);color:var(--text-strong)">Błąd walidacji</h4><p style="margin:0;font-size:14px;">Brak wymaganego pola, zły typ pliku, zbyt duży plik lub przyszła data → komunikat inline, brak wysyłki.</p></div>
+          <div class="card flat"><h4 style="font-family:var(--sans);color:var(--text-strong)">Usługa niedostępna</h4><p style="margin:0;font-size:14px;">Analiza obrazu / agent nieosiągalny → nietechniczny komunikat i&nbsp;ponowienie bez ponownego wpisywania formularza.</p></div>
+          <div class="card flat"><h4 style="font-family:var(--sans);color:var(--text-strong)">Czat poza tematem</h4><p style="margin:0;font-size:14px;">Agent grzecznie odmawia i&nbsp;wraca do sprawy zwrotu/reklamacji.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. DECISIONS -->
+    <section id="decisions">
+      <span class="sec-eyebrow"><span class="dot"></span>Sekcja 5</span>
+      <h2>Cztery kategorie decyzji</h2>
+      <p class="section-intro">Decyzja agenta to <strong>dokładnie jedna</strong> z&nbsp;czterech kategorii. Gdy dowody są niewystarczające lub sprzeczne, agent musi eskalować lub poprosić o&nbsp;dane — nigdy nie zgaduje wiążącego werdyktu.</p>
+      <div class="decisions" style="margin-top:26px;">
+        <div class="dec eligible">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg></div>
+          <div class="pl">Kwalifikuje się</div><div class="en">Eligible</div>
+          <p>Sprawa wygląda na zgodną z&nbsp;polityką. Komunikuj pozytywny wstępny wynik i&nbsp;konkretne kolejne kroki.</p>
+        </div>
+        <div class="dec noteligible">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6 6 18M6 6l12 12"/></svg></div>
+          <div class="pl">Nie kwalifikuje się</div><div class="en">Not eligible</div>
+          <p>Konkretny warunek polityki nie jest spełniony. Podaj precyzyjny powód i&nbsp;wskaż możliwość weryfikacji przez człowieka.</p>
+        </div>
+        <div class="dec review">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></div>
+          <div class="pl">Wymaga weryfikacji</div><div class="en">Needs human review</div>
+          <p>Przypadek graniczny/niejednoznaczny. Wyjaśnij, co jest niepewne i&nbsp;że człowiek to zweryfikuje.</p>
+        </div>
+        <div class="dec moreinfo">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg></div>
+          <div class="pl">Potrzeba więcej informacji</div><div class="en">More info required</div>
+          <p>Dane niewystarczające. Wymień dokładnie, co dostarczyć, i&nbsp;zaproś klienta do uzupełnienia w&nbsp;czacie.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. SCREENS -->
+    <section id="screens">
+      <span class="sec-eyebrow"><span class="dot"></span>Sekcja 6</span>
+      <h2>Ekrany aplikacji</h2>
+      <p class="section-intro">Jedno przejście do przodu: <strong>formularz → czat</strong> po udanej decyzji. Brak edycji wstecz w&nbsp;MVP; odświeżenie kończy sesję (brak trwałości).</p>
+      <div class="mockups" style="margin-top:26px;">
+        <div>
+          <div class="device">
+            <div class="bar"><span></span><span></span><span></span><span class="url">copilot.nbp.pl · Zgłoszenie</span></div>
+            <div class="screen">
+              <h3 style="font-size:17px;margin-bottom:2px;">Sprawdź swoje zgłoszenie</h3>
+              <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Wypełnij formularz i&nbsp;dodaj jedno zdjęcie urządzenia.</p>
+              <div class="f-row"><label>Typ zgłoszenia</label><div class="seg"><div class="opt on">Zwrot</div><div class="opt">Reklamacja</div></div></div>
+              <div class="f-row"><label>Kategoria sprzętu</label><div class="f-control ph">Laptopy i komputery ▾</div></div>
+              <div class="f-row"><label>Model / nazwa <span class="req">*</span></label><div class="f-control ph">np. Dell Vostro 7500</div></div>
+              <div class="f-row"><label>Data zakupu <span class="req">*</span></label><div class="f-control ph">2026-06-18 📅</div></div>
+              <div class="f-row"><label>Powód <span style="color:var(--text-muted);font-weight:400;">(opcjonalny dla zwrotu)</span></label><div class="f-control ph" style="min-height:38px;">Zmieniłem zdanie…</div></div>
+              <div class="f-row"><label>Zdjęcie urządzenia <span class="req">*</span></label>
+                <div class="dropzone"><div class="thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m4 18 5-5 4 4 3-3 4 4"/></svg></div>JPEG / PNG / WebP · maks. 10&nbsp;MB</div>
+              </div>
+              <div class="btn-primary">Sprawdź zgłoszenie</div>
+            </div>
+          </div>
+          <p class="mock-label">Ekran 1 — Formularz zgłoszenia</p>
+        </div>
+        <div>
+          <div class="device">
+            <div class="bar"><span></span><span></span><span></span><span class="url">copilot.nbp.pl · Czat</span></div>
+            <div class="screen">
+              <div class="chat-summary">
+                <div class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m4 18 5-5 4 4 3-3 4 4"/></svg></div>
+                <dl><dt>Typ:</dt><dd>Zwrot</dd><dt>Kat.:</dt><dd>Laptopy</dd><dt>Model:</dt><dd>Dell Vostro 7500</dd><dt>Zakup:</dt><dd>2026-06-18</dd></dl>
+              </div>
+              <div class="bubble agent">
+                <div>Dzień dobry! Przeanalizowałem Twoje zgłoszenie.</div>
+                <div class="verdict"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" width="13" height="13"><path d="M20 6 9 17l-5-5"/></svg> Kwalifikuje się</div>
+                <div>Na zdjęciu nie widać śladów używania, a&nbsp;data zakupu mieści się w&nbsp;14-dniowym oknie odstąpienia. <strong>Następny krok:</strong> zapakuj urządzenie z&nbsp;kompletem akcesoriów i&nbsp;przygotuj je do odesłania.</div>
+                <div class="disclaimer">To wstępna, automatyczna ocena, a&nbsp;nie wiążąca decyzja. Ostateczną decyzję podejmuje konsultant.</div>
+              </div>
+              <div class="bubble user">A czy płacę za odesłanie?</div>
+              <div class="bubble agent">Zgodnie z&nbsp;polityką zwrotów koszt odesłania pokrywa…</div>
+              <div class="chat-input"><div class="box">Napisz wiadomość…</div><div class="send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="m22 2-7 20-4-9-9-4z"/></svg></div></div>
+            </div>
+          </div>
+          <p class="mock-label">Ekran 2 — Czat z decyzją agenta</p>
+        </div>
+      </div>
+      <p style="font-size:13px;color:var(--text-muted);text-align:center;margin-top:18px;font-style:italic;">Makiety poglądowe — ilustrują układ i&nbsp;stany opisane w&nbsp;§9 PRD; nie są finalnym UI.</p>
+    </section>
+
+    <!-- 7. DIAGRAM -->
+    <section id="diagram">
+      <span class="sec-eyebrow"><span class="dot"></span>Sekcja 7</span>
+      <h2>Diagram przepływu użytkownika</h2>
+      <p class="section-intro">Pełna ścieżka od otwarcia formularza, przez walidację i&nbsp;analizę AI, po czat z&nbsp;decyzją i&nbsp;pytaniami uzupełniającymi.</p>
+      <div class="diagram-wrap" style="margin-top:22px;">
+        <pre class="mermaid">
+flowchart TD
+    A[Otwarcie aplikacji: Formularz] --> B{Typ?}
+    B -->|Reklamacja| C[Powod wymagany]
+    B -->|Zwrot| D[Powod opcjonalny]
+    C --> E[Kategoria, model, data, 1 zdjecie]
+    D --> E
+    E --> F{Walidacja klient + serwer}
+    F -->|Niepoprawne: brak pola / zly typ / >10MB / przyszla data| G[Blad inline, zostaje na formularzu]
+    G --> E
+    F -->|Poprawne| H[Backend kompresuje zdjecie]
+    H --> I{Typ?}
+    I -->|Reklamacja| J[LLM: prompt analizy reklamacji]
+    I -->|Zwrot| K[LLM: prompt analizy zwrotu]
+    J --> L{Usluga dostepna?}
+    K --> L
+    L -->|Nie| M[Nietechniczny blad + ponow, dane zachowane]
+    M --> E
+    L -->|Tak| N[Agent: prompt decyzji + formularz + analiza + polityka]
+    N --> O{Kategoria decyzji}
+    O -->|Kwalifikuje sie| P[Czat: pierwsza wiadomosc]
+    O -->|Nie kwalifikuje sie| P
+    O -->|Wymaga weryfikacji| P
+    O -->|Wiecej informacji| P
+    P --> Q[Klient wysyla pytanie]
+    Q --> R{Na temat?}
+    R -->|Tak| S[Agent odpowiada z pelnym kontekstem]
+    R -->|Nie| T[Agent odmawia, wraca do sprawy]
+    S --> Q
+    T --> Q
+        </pre>
+      </div>
+    </section>
+
+    <!-- 8. CRITERIA -->
+    <section id="criteria">
+      <span class="sec-eyebrow"><span class="dot"></span>Sekcja 8</span>
+      <div class="kicker-row"><h2 style="margin-bottom:0;">Kryteria akceptacji</h2><span style="font-size:13px;color:var(--text-muted);">27 kryteriów · 5 grup — kliknij, aby rozwinąć</span></div>
+      <div style="margin-top:20px;">
+        <div class="ac-group open">
+          <button class="ac-head"><span class="ac-ic">A</span><span class="ac-name">Formularz</span><span class="count">AC-01 … 09</span><span class="chev">›</span></button>
+          <div class="ac-body">
+            <div class="ac-item"><span class="id">AC-01</span><span class="txt">Selektor <strong>Typ</strong> z dokładnie dwiema opcjami: <em>Reklamacja</em> i <em>Zwrot</em>.</span></div>
+            <div class="ac-item"><span class="id">AC-02</span><span class="txt">Selektor <strong>kategorii sprzętu</strong> z predefiniowanej listy.</span></div>
+            <div class="ac-item"><span class="id">AC-03</span><span class="txt">Pole tekstowe <strong>model/nazwa</strong> (wymagane).</span></div>
+            <div class="ac-item"><span class="id">AC-04</span><span class="txt">Picker <strong>daty zakupu</strong> odrzucający daty przyszłe.</span></div>
+            <div class="ac-item"><span class="id">AC-05</span><span class="txt">Pole <strong>powód</strong> wymagane przy Reklamacji, opcjonalne przy Zwrocie.</span></div>
+            <div class="ac-item"><span class="id">AC-06</span><span class="txt">Wymagane <strong>dokładnie jedno</strong> zdjęcie; bez niego brak wysyłki.</span></div>
+            <div class="ac-item"><span class="id">AC-07</span><span class="txt">Upload przyjmuje tylko JPEG, PNG, WebP i odrzuca pliki &gt; <strong>10&nbsp;MB</strong> przed kompresją, z konkretnym komunikatem dla każdego naruszenia.</span></div>
+            <div class="ac-item"><span class="id">AC-08</span><span class="txt">Wszystkie naruszenia (wymagane pola, typ, rozmiar, przyszła data) pokazywane inline i blokują wysyłkę.</span></div>
+            <div class="ac-item"><span class="id">AC-09</span><span class="txt">Wszystkie etykiety, opcje, teksty pomocnicze i błędy w <strong>języku polskim</strong>.</span></div>
+          </div>
+        </div>
+        <div class="ac-group">
+          <button class="ac-head"><span class="ac-ic">B</span><span class="ac-name">Analiza obrazu</span><span class="count">AC-10 … 13</span><span class="chev">›</span></button>
+          <div class="ac-body">
+            <div class="ac-item"><span class="id">AC-10</span><span class="txt">Backend kompresuje/skaluje obraz przed wysłaniem do multimodalnego LLM.</span></div>
+            <div class="ac-item"><span class="id">AC-11</span><span class="txt">System używa <strong>innego promptu analizy</strong> dla Reklamacji i Zwrotu.</span></div>
+            <div class="ac-item"><span class="id">AC-12</span><span class="txt">Dla Zwrotu: raport o śladach używania, uszkodzeniach, kompletności i ocenie zdatności do odsprzedaży jako nowy.</span></div>
+            <div class="ac-item"><span class="id">AC-13</span><span class="txt">Dla Reklamacji: raport o widocznym uszkodzeniu, jego typie i najbardziej prawdopodobnej przyczynie.</span></div>
+          </div>
+        </div>
+        <div class="ac-group">
+          <button class="ac-head"><span class="ac-ic">C</span><span class="ac-name">Decyzja AI</span><span class="count">AC-14 … 19</span><span class="chev">›</span></button>
+          <div class="ac-body">
+            <div class="ac-item"><span class="id">AC-14</span><span class="txt">Agent używa <strong>innego promptu decyzyjnego</strong> dla Reklamacji i Zwrotu.</span></div>
+            <div class="ac-item"><span class="id">AC-15</span><span class="txt">Decyzja to dokładnie jedna z czterech kategorii: Kwalifikuje się, Nie kwalifikuje się, Wymaga weryfikacji, Potrzeba więcej informacji.</span></div>
+            <div class="ac-item"><span class="id">AC-16</span><span class="txt">Decyzja powstaje z połączenia: danych formularza, wyniku analizy obrazu i odpowiedniego dokumentu polityki.</span></div>
+            <div class="ac-item"><span class="id">AC-17</span><span class="txt">Każda decyzja zawiera uzasadnienie odwołujące się do konkretnych powodów (zdjęcie + reguła polityki).</span></div>
+            <div class="ac-item"><span class="id">AC-18</span><span class="txt">Przy dowodach niewystarczających/sprzecznych agent zwraca Wymaga weryfikacji lub Potrzeba więcej informacji — nie wydaje definitywnego werdyktu.</span></div>
+            <div class="ac-item"><span class="id">AC-19</span><span class="txt">Agent nigdy nie wymyśla reguł, cen, dat ani faktów spoza wejścia/polityki.</span></div>
+          </div>
+        </div>
+        <div class="ac-group">
+          <button class="ac-head"><span class="ac-ic">D</span><span class="ac-name">Czat</span><span class="count">AC-20 … 24</span><span class="chev">›</span></button>
+          <div class="ac-body">
+            <div class="ac-item"><span class="id">AC-20</span><span class="txt">Po udanej decyzji UI przechodzi z formularza do czatu i renderuje <strong>pierwszą wiadomość</strong>: powitanie, kategoria, wyjaśnienie, kroki, zastrzeżenie.</span></div>
+            <div class="ac-item"><span class="id">AC-21</span><span class="txt">Agent ma dostęp do pełnego kontekstu (formularz, analiza obrazu, pierwsza decyzja) we wszystkich kolejnych turach.</span></div>
+            <div class="ac-item"><span class="id">AC-22</span><span class="txt">Klient może wysyłać pytania uzupełniające i otrzymuje odpowiedzi świadome kontekstu.</span></div>
+            <div class="ac-item"><span class="id">AC-23</span><span class="txt">Prośby poza tematem są odrzucane i przekierowywane do tematu zwrotu/reklamacji.</span></div>
+            <div class="ac-item"><span class="id">AC-24</span><span class="txt">Każda wiadomość z decyzją zawiera obowiązkowe zastrzeżenie (ocena wstępna, automatyczna, niewiążąca).</span></div>
+          </div>
+        </div>
+        <div class="ac-group">
+          <button class="ac-head"><span class="ac-ic">E</span><span class="ac-name">Ogólne</span><span class="count">AC-25 … 27</span><span class="chev">›</span></button>
+          <div class="ac-body">
+            <div class="ac-item"><span class="id">AC-25</span><span class="txt">Cały tekst skierowany do klienta (formularz, czat, decyzje, błędy, zastrzeżenia) w <strong>języku polskim</strong>.</span></div>
+            <div class="ac-item"><span class="id">AC-26</span><span class="txt">Przy awarii analizy/agenta klient widzi nietechniczny błąd i może ponowić bez ponownego wpisywania danych.</span></div>
+            <div class="ac-item"><span class="id">AC-27</span><span class="txt">Wynik decyzji jest na tyle ustrukturyzowany (kategoria + uzasadnienie + dane sprawy), aby przekazać przypadek „Wymaga weryfikacji" człowiekowi.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. AGENT -->
+    <section id="agent">
+      <span class="sec-eyebrow"><span class="dot"></span>Sekcja 9</span>
+      <h2>Specyfikacja zachowania agenta</h2>
+      <p class="section-intro">Trzy komponenty współpracują: <strong>multimodalny analizator obrazu</strong> (dwa odrębne prompty), <strong>agent decyzyjny</strong> (dwa odrębne prompty) oraz <strong>agent konwersacyjny</strong> kontynuujący czat z pełnym kontekstem sesji.</p>
+      <div class="grid cols-2" style="margin-top:24px;">
+        <div class="dos allow">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" width="20" height="20"><path d="M20 6 9 17l-5-5"/></svg> Dozwolone</h3>
+          <ul>
+            <li>Wydać jedną z czterech kategorii decyzji z uzasadnieniem opartym na analizie zdjęcia i polityce.</li>
+            <li>Poprosić o konkretne brakujące informacje.</li>
+            <li>Wyjaśnić obowiązujące reguły polityki i kolejne kroki.</li>
+            <li>Odpowiadać na pytania uzupełniające na temat, korzystając z pełnego kontekstu.</li>
+          </ul>
+        </div>
+        <div class="dos deny">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" width="20" height="20"><path d="M18 6 6 18M6 6l12 12"/></svg> Niedozwolone</h3>
+          <ul>
+            <li>Wydawać wiążącej/ostatecznej decyzji.</li>
+            <li>Wymyślać reguł, cen, terminów, specyfikacji ani faktów spoza wejścia/polityki.</li>
+            <li>Udzielać zindywidualizowanej, wiążącej porady prawnej ani gwarantować wyniku.</li>
+            <li>Wymuszać werdykt, gdy dowody są niewystarczające/sprzeczne — musi eskalować lub poprosić o dane.</li>
+            <li>Odpowiadać poza tematem — przekierowuje do sprawy.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout" style="margin-top:24px;">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="m9 12 2 2 4-4"/></svg></div>
+        <div>
+          <h3>Obowiązkowe zastrzeżenie</h3>
+          <p>Każda wiadomość z decyzją musi zawierać po polsku informację, że ocena jest <strong>wstępna, automatyczna i niewiążąca</strong>, a ostateczną decyzję podejmuje konsultant.</p>
+          <p class="quote">„To wstępna, automatyczna ocena Twojego zgłoszenia, a nie wiążąca decyzja. Ostateczną decyzję podejmuje konsultant po weryfikacji zgłoszenia."</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. SCOPE -->
+    <section id="scope">
+      <span class="sec-eyebrow"><span class="dot"></span>Sekcja 10</span>
+      <h2>Poza zakresem MVP</h2>
+      <p class="section-intro">Poniższe świadomie pominięto. Architektura nie powinna ich wykluczać — część jest zaplanowana w backlogu.</p>
+      <div class="chips" style="margin-top:22px;">
+        <span class="chip"><span class="x">✕</span> Uwierzytelnianie / konta</span>
+        <span class="chip planned"><span class="x">↺</span> Lookup klienta i historii zakupów</span>
+        <span class="chip planned"><span class="x">↺</span> Trwałość sesji/decyzji w bazie</span>
+        <span class="chip planned"><span class="x">↺</span> Baza wiedzy RAG agenta</span>
+        <span class="chip"><span class="x">✕</span> Konsola recenzenta / admin UI</span>
+        <span class="chip"><span class="x">✕</span> Wiele zdjęć / wideo</span>
+        <span class="chip"><span class="x">✕</span> Powiadomienia (e-mail/SMS/push)</span>
+        <span class="chip"><span class="x">✕</span> Płatności, etykiety wysyłki, RMA</span>
+        <span class="chip"><span class="x">✕</span> Wielojęzyczność (tylko PL)</span>
+        <span class="chip"><span class="x">✕</span> Natywne aplikacje mobilne</span>
+        <span class="chip"><span class="x">✕</span> Edycja/wycofanie zgłoszenia</span>
+        <span class="chip"><span class="x">✕</span> Decyzje wiążące/ostateczne</span>
+      </div>
+      <div class="legend">
+        <span><span class="swatch"></span> Poza zakresem na stałe</span>
+        <span><span class="swatch dash"></span> Zaplanowane (Backlog)</span>
+      </div>
+    </section>
+
+    <!-- 11. CONSTRAINTS -->
+    <section id="constraints">
+      <span class="sec-eyebrow"><span class="dot"></span>Sekcja 11</span>
+      <h2>Ograniczenia</h2>
+      <h3 style="margin-top:18px;">Biznesowe</h3>
+      <ul class="clean">
+        <li>Decyzja jest <strong>doradcza i niewiążąca</strong>; firma zachowuje prawo ostatecznej oceny przez człowieka.</li>
+        <li>Produkt zgodny z <strong>polskim prawem konsumenckim</strong>: 14-dniowe odstąpienie (zwrot), rękojmia / gwarancja (reklamacja).</li>
+        <li>Każda decyzja niesie zastrzeżenie o wstępnej, automatycznej ocenie.</li>
+        <li>Agent nie udziela zindywidualizowanej wiążącej porady prawnej — wyjaśnia politykę jak opublikowano.</li>
+      </ul>
+      <h3 style="margin-top:24px;">Funkcjonalne</h3>
+      <div class="grid cols-2" style="margin-top:8px;">
+        <div class="card flat">
+          <h4 style="font-family:var(--sans);">Obraz</h4>
+          <p style="font-size:14px;margin:0;">Dokładnie jeden plik; formaty JPEG, PNG, WebP; maks. <strong>10&nbsp;MB</strong> przed kompresją; backend kompresuje/skaluje przed wysyłką do LLM.</p>
+        </div>
+        <div class="card flat">
+          <h4 style="font-family:var(--sans);">Pozostałe reguły</h4>
+          <p style="font-size:14px;margin:0;">Typ: Reklamacja / Zwrot. Data zakupu nie może być przyszła. Powód: wymagany dla reklamacji. Język: polski. Platforma: responsywny web, jedna sesja, brak trwałości.</p>
+        </div>
+      </div>
+      <h4 style="font-family:var(--sans);margin-top:20px;">Kategorie sprzętu (predefiniowana lista)</h4>
+      <div class="cat-list">
+        <span class="c">Smartfony i telefony</span><span class="c">Laptopy i komputery</span><span class="c">Tablety</span><span class="c">Telewizory i monitory</span><span class="c">Audio (słuchawki, głośniki)</span><span class="c">Konsole i gaming</span><span class="c">Smartwatche i wearables</span><span class="c">Aparaty i fotografia</span><span class="c">Małe AGD</span><span class="c">Akcesoria (ładowarki, kable, etui)</span><span class="c">Inne</span>
+      </div>
+      <h3 style="margin-top:24px;">Dokumenty polityk (wstrzykiwane do promptu)</h3>
+      <div class="tbl-wrap" style="margin-top:8px;">
+        <table>
+          <thead><tr><th>Dokument</th><th>Ścieżka</th><th>Kiedy używany</th></tr></thead>
+          <tbody>
+            <tr><td>Polityka zwrotów</td><td><code>docs/policies/polityka-zwrotow.md</code></td><td>Prompt decyzyjny <strong>zwrotu</strong> (Typ = Zwrot)</td></tr>
+            <tr><td>Polityka reklamacji</td><td><code>docs/policies/polityka-reklamacji.md</code></td><td>Prompt decyzyjny <strong>reklamacji</strong> (Typ = Reklamacja)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 12. BACKLOG -->
+    <section id="backlog">
+      <span class="sec-eyebrow"><span class="dot"></span>Sekcja 12</span>
+      <h2>Planowany backlog (post-MVP)</h2>
+      <p class="section-intro">Świadomie odroczone — wymienione, aby ADR i implementacja zostały zaprojektowane z „szwami" ułatwiającymi późniejsze dodanie.</p>
+      <div class="backlog" style="margin-top:22px;">
+        <div class="bl"><div class="n"></div><div><h4>Trwałość sesji i decyzji — zrealizowane</h4><p>Każda sesja, dane formularza, analiza obrazu, decyzja i transkrypt czatu są trwale zapisywane w osadzonej bazie <strong>H2</strong> (Spring Data JPA) dla audytu — zob. <code>docs/ADR/004-persistence.md</code>. (SQLite oceniono i odrzucono; magazyn wektorów/RAG to osobna, odroczona decyzja — ADR-004 §6/§8.)</p></div></div>
+        <div class="bl"><div class="n"></div><div><h4>Przechowywanie przesłanego zdjęcia</h4><p>Zdjęcie sprawy nie jest obecnie zapisywane (analizowane i odrzucane), więc po przywróceniu sesji nie ma miniatury. Dodać trwałe przechowywanie obrazu, najlepiej w magazynie blob zgodnym z <strong>S3</strong> (w bazie tylko referencja). <em>(Nowe — Backlog.)</em></p></div></div>
+        <div class="bl"><div class="n"></div><div><h4>Lookup klienta i historii zakupów</h4><p>Wzbogacenie decyzji o istniejące dane klienta/zamówień z bazy danych.</p></div></div>
+        <div class="bl"><div class="n"></div><div><h4>Baza wiedzy RAG agenta</h4><p>Wyszukiwanie po specyfikacjach elektroniki i szczegółowych procedurach poza dwoma dokumentami polityk. (Magazyn wektorów/embeddingów do wyboru we własnym ADR po researchu — nie SQLite; zob. ADR-004 §8.)</p></div></div>
+        <div class="bl"><div class="n"></div><div><h4>Konsola recenzenta</h4><p>Back-office UI do obsługi spraw oznaczonych „Wymaga weryfikacji".</p></div></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer class="site">
+  <div class="foot-inner">
+    <img src="../assets/logo.svg" alt="NBP" />
+    <div class="stack">
+      <span class="stk">Java 21 + Spring Boot 3.5</span>
+      <span class="stk">OpenRouter · openai-java</span>
+      <span class="stk">Angular + Material</span>
+      <span class="stk">ngx-markdown</span>
+      <span class="stk">Playwright E2E</span>
+    </div>
+    <div class="foot-meta">
+      <strong>Hardware Service Decision Copilot</strong> — PRD (MVP / PoC). Zbudowane na żywo podczas szkolenia JSystems „AI dla programistów" (edycja NBP). Dokument opisuje wyłącznie funkcjonalność, zachowanie systemu i UX/UI — decyzje technologiczne, modele danych i strategia testów należą do <a href="ADR/">ADR</a>. Wygenerowano ze źródła <a href="PRD-Product-Requirements-Document.md">PRD-Product-Requirements-Document.md</a>.
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+// ---- Mermaid ----
+if (window.mermaid) {
+  mermaid.initialize({
+    startOnLoad:true,
+    theme:"base",
+    themeVariables:{
+      fontFamily:'"Libre Franklin",Arial,sans-serif',
+      primaryColor:"#F7F7F7", primaryBorderColor:"#4A74B0", primaryTextColor:"#152E52",
+      lineColor:"#4A74B0", tertiaryColor:"#E8D499",
+      fontSize:"13px"
+    },
+    flowchart:{ useMaxWidth:true, htmlLabels:true, curve:"basis" }
+  });
+}
+
+// ---- Scroll progress ----
+const prog = document.getElementById("progress");
+function onScroll(){
+  const h = document.documentElement;
+  const max = h.scrollHeight - h.clientHeight;
+  prog.style.width = (max>0 ? (h.scrollTop/max*100) : 0) + "%";
+}
+window.addEventListener("scroll", onScroll, {passive:true});
+onScroll();
+
+// ---- Tabs ----
+document.querySelectorAll(".tab").forEach(t=>{
+  t.addEventListener("click", ()=>{
+    const id = t.dataset.tab;
+    t.parentElement.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+    t.classList.add("active");
+    document.querySelectorAll(".tabpanel").forEach(p=>p.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+  });
+});
+
+// ---- Accordion (acceptance criteria) ----
+document.querySelectorAll(".ac-head").forEach(h=>{
+  h.addEventListener("click", ()=> h.parentElement.classList.toggle("open"));
+});
+
+// ---- Scrollspy ----
+const links = Array.from(document.querySelectorAll("nav.toc a"));
+const map = {};
+links.forEach(a=>{ const id=a.getAttribute("href").slice(1); const el=document.getElementById(id); if(el) map[id]=a; });
+const spy = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      links.forEach(l=>l.classList.remove("active"));
+      const a = map[e.target.id];
+      if(a) a.classList.add("active");
+    }
+  });
+}, { rootMargin:"-20% 0px -70% 0px", threshold:0 });
+Object.keys(map).forEach(id=>{ const el=document.getElementById(id); if(el) spy.observe(el); });
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "category": "MORE_INFO_REQUIRED",
+  "justification": "Przesłane zdjęcie nie pokazuje miejsca usterki. Nie można ocenić rodzaju wady ani prawdopodobnej przyczyny bez wyraźnego zdjęcia uszkodzonego miejsca.",
+  "nextSteps": "Proszę przesłać zdjęcie spełniające poniższe wymagania w wiadomości czatu.",
+  "missingInfo": [
+    "Wyraźne zdjęcie ekranu lub miejsca usterki",
+    "Zdjęcie przy dobrym oświetleniu pokazujące szczegóły uszkodzenia"
+  ]
+}

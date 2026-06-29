@@ -1,0 +1,13 @@
+{
+  "summary": "Smartfon z wyraźnie pękniętym ekranem — widoczne ślady upadku mechanicznego.",
+  "observations": [
+    "Pęknięty ekran z gwiazdkowym wzorem pęknięć",
+    "Wgniecenia na obudowie",
+    "Ślady uderzenia na narożniku",
+    "Typowe oznaki uszkodzenia mechanicznego po upadku"
+  ],
+  "confidence": "HIGH",
+  "visibleDamage": "YES",
+  "damageType": "Uszkodzenie mechaniczne — pęknięty ekran, wgniecenia obudowy",
+  "likelyCause": "USER_CAUSED"
+}

@@ -1,0 +1,13 @@
+{
+  "summary": "Smartfon z uszkodzonym ekranem — niejednoznaczna przyczyna, możliwy defekt produkcyjny lub uszkodzenie mechaniczne.",
+  "observations": [
+    "Przebarwienia i martwe piksele na ekranie",
+    "Brak wyraźnych śladów upadku na obudowie",
+    "Uszkodzenie może być defektem matrycy lub skutkiem nacisku mechanicznego",
+    "Niejednoznaczna przyczyna"
+  ],
+  "confidence": "LOW",
+  "visibleDamage": "YES",
+  "damageType": "Uszkodzenie ekranu — przebarwienia i martwe piksele",
+  "likelyCause": "INCONCLUSIVE"
+}

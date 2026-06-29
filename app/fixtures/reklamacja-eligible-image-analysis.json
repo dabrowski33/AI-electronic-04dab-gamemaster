@@ -1,0 +1,13 @@
+{
+  "summary": "Smartfon z wyraźną wadą ekranu — pionowe linie na matrycy bez widocznych śladów uszkodzeń mechanicznych.",
+  "observations": [
+    "Pionowe linie na ekranie LCD",
+    "Brak pęknięć ekranu",
+    "Brak śladów upadku na obudowie",
+    "Wada wygląda na defekt produkcyjny matrycy"
+  ],
+  "confidence": "HIGH",
+  "visibleDamage": "YES",
+  "damageType": "Defekt matrycy — pionowe linie na ekranie",
+  "likelyCause": "MANUFACTURING_DEFECT"
+}

@@ -1,0 +1,30 @@
+data: Dziękujemy
+
+data:  za
+
+data:  Pana/Pani
+
+data:  pytanie
+
+data: .
+
+data:  Rozumiem
+
+data: ,
+
+data:  że
+
+data:  chciałby
+
+data:  Pan/Pani
+
+data:  dowiedzieć
+
+data:  się
+
+data:  więcej
+
+data: .
+
+event: done
+data:

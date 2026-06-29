@@ -1,0 +1,4 @@
+app:
+  llm:
+    api-key: test-key
+    base-url: http://localhost:8089

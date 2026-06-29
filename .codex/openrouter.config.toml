@@ -1,0 +1,6 @@
+# To use OpenRouter run with:
+#   codex --profile openrouter
+
+model_provider = "openrouter"
+model = "deepseek/deepseek-v4-pro" # or "z-ai/glm-5.1" or "minimax/minimax-m2.7", etc.
+model_context_window = 128000 # check for each model what is max contex window
