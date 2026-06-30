@@ -1,0 +1,106 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: genrl-postgres
+    environment:
+      POSTGRES_DB: genrl_gamemaster
+      POSTGRES_USER: genrl
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-genrl_secure_pass}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infra/sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U genrl -d genrl_gamemaster"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - genrl-network
+
+  java-simulator:
+    build:
+      context: ./backend/java-simulator
+      dockerfile: Dockerfile
+    container_name: genrl-java-simulator
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_URL: jdbc:postgresql://postgres:5432/genrl_gamemaster
+      DB_USERNAME: genrl
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-genrl_secure_pass}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      PYTHON_ORCHESTRATOR_URL: http://python-orchestrator:8000
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - genrl-network
+
+  python-orchestrator:
+    build:
+      context: ./backend/python-orchestrator
+      dockerfile: Dockerfile
+    container_name: genrl-python-orchestrator
+    environment:
+      DB_URL: postgresql://genrl:${POSTGRES_PASSWORD:-genrl_secure_pass}@postgres:5432/genrl_gamemaster
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      JAVA_SIMULATOR_URL: http://java-simulator:8080
+      NODE_BFF_URL: http://node-bff:3000
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - genrl-network
+
+  node-bff:
+    build:
+      context: ./backend/node-bff
+      dockerfile: Dockerfile
+    container_name: genrl-node-bff
+    environment:
+      DB_URL: postgresql://genrl:${POSTGRES_PASSWORD:-genrl_secure_pass}@postgres:5432/genrl_gamemaster
+      JAVA_SIMULATOR_URL: http://java-simulator:8080
+      PYTHON_ORCHESTRATOR_URL: http://python-orchestrator:8000
+      FRONTEND_URL: http://localhost:5173
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      java-simulator:
+        condition: service_started
+      python-orchestrator:
+        condition: service_started
+    networks:
+      - genrl-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: genrl-frontend
+    environment:
+      VITE_API_URL: http://localhost:3000
+      VITE_WS_URL: ws://localhost:3000
+    ports:
+      - "5173:5173"
+    depends_on:
+      - node-bff
+    networks:
+      - genrl-network
+
+volumes:
+  postgres_data:
+
+networks:
+  genrl-network:
+    driver: bridge

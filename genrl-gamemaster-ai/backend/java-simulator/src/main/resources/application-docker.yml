@@ -1,0 +1,39 @@
+spring:
+  config:
+    activate:
+      on-profile: docker
+
+  datasource:
+    url: jdbc:postgresql://postgres:5432/genrl_gamemaster
+    username: genrl
+    password: ${POSTGRES_PASSWORD}
+    hikari:
+      maximum-pool-size: 30
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+logging:
+  level:
+    root: INFO
+    com.genrl.gamemaster: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+simulator:
+  timeout-seconds: 60
+  headless: true
